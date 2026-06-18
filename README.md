@@ -289,28 +289,17 @@ http://localhost:5000
 
 ## Screenshots
 
-### Dashboard
+| Dashboard | Alerts |
+|------------|------------|
+| ![](docs/screenshots/Dashboard.png) | ![](docs/screenshots/Alerts.png) |
 
-- Security Overview
-- Threat Metrics
-- Alert Statistics
+| Incident Response | Log Analysis |
+|------------|------------|
+| ![](docs/screenshots/Incident-Response.png) | ![](docs/screenshots/Log-Analysis.png) |
 
-### Alert Management
-
-- Threat Detection Results
-- MITRE Mapping
-
-### Incident Management
-
-- Investigation Tracking
-
-### Threat Intelligence
-
-- VirusTotal Reputation Lookup
-
-### Reporting
-
-- PDF and CSV Export
+| Threat Intelligence | Reporting |
+|------------|------------|
+| ![](docs/screenshots/Threat-Intel.png) | ![](docs/screenshots/Report.png) |
 
 ---
 
