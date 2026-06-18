@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Alert {{ alert.alert_id }}{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <div>
+    <h4><i class="bi bi-exclamation-octagon me-2 text-warning"></i>{{ alert.title }}</h4>
+    <small class="text-muted font-monospace">{{ alert.alert_id }}</small>
+  </div>
+  <span class="sev-badge sev-{{ alert.severity }} fs-6">{{ alert.severity|upper }}</span>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="soc-card mb-3">
+      <div class="soc-card-header">Alert Details</div>
+      <div class="soc-card-body">
+        <div class="row g-3">
+          {% for label, val, cls in [
+            ('Threat Type', alert.threat_type, 'text-warning'),
+            ('Source IP', alert.source_ip or 'N/A', 'font-monospace text-warning'),
+            ('Username', alert.username or 'N/A', ''),
+            ('Hostname', alert.hostname or 'N/A', ''),
+            ('Event Count', alert.event_count, 'fw-bold'),
+            ('Status', alert.status, ''),
+          ] %}
+          <div class="col-md-6">
+            <div class="detail-item">
+              <span class="detail-label">{{ label }}</span>
+              <span class="detail-value {{ cls }}">{{ val }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <hr/>
+        <div class="detail-item mb-2">
+          <span class="detail-label">Description</span>
+          <p class="mt-1">{{ alert.description or 'No description available.' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="soc-card mb-3">
+      <div class="soc-card-header"><i class="bi bi-diagram-3 me-2 text-info"></i>MITRE ATT&amp;CK Mapping</div>
+      <div class="soc-card-body">
+        {% if alert.mitre_tactic or alert.mitre_technique %}
+        <div class="mitre-box">
+          <div class="mitre-item">
+            <span class="mitre-label">Tactic</span>
+            <span class="mitre-value">{{ alert.mitre_tactic or 'N/A' }}</span>
+          </div>
+          <div class="mitre-item">
+            <span class="mitre-label">Technique</span>
+            <span class="mitre-value font-monospace text-info">{{ alert.mitre_technique or 'N/A' }}</span>
+          </div>
+        </div>
+        {% else %}
+        <p class="text-muted">No MITRE mapping available.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if alert.raw_evidence %}
+    <div class="soc-card mb-3">
+      <div class="soc-card-header"><i class="bi bi-file-code me-2"></i>Raw Evidence</div>
+      <div class="soc-card-body">
+        <pre class="evidence-pre">{{ alert.raw_evidence }}</pre>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <div class="soc-card mb-3">
+      <div class="soc-card-header">Actions</div>
+      <div class="soc-card-body">
+        <form method="POST" action="{{ url_for('alerts.update_status', alert_id=alert.id) }}" class="mb-3">
+          <label class="form-label small">Update Status</label>
+          <select name="status" class="form-select form-select-sm mb-2">
+            {% for s in ['open','investigating','closed'] %}
+            <option value="{{ s }}" {% if alert.status==s %}selected{% endif %}>{{ s|capitalize }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm w-100">Update Status</button>
+        </form>
+        <button class="btn btn-outline-info btn-sm w-100 mb-2" onclick="enrichThreatIntel({{ alert.id }})">
+          <i class="bi bi-search me-1"></i>Enrich Intel
+        </button>
+        <button class="btn btn-outline-danger btn-sm w-100" onclick="markFP({{ alert.id }})">
+          <i class="bi bi-x-circle me-1"></i>Mark False Positive
+        </button>
+        {% if alert.source_ip %}
+        <hr/>
+        <a href="{{ url_for('intelligence.lookup') }}" class="btn btn-outline-info btn-sm w-100">
+          <i class="bi bi-radar me-1"></i>Lookup IP: {{ alert.source_ip }}
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="soc-card">
+      <div class="soc-card-header">Timeline</div>
+      <div class="soc-card-body">
+        <div class="small text-muted">
+          <div class="mb-1"><strong>Detected:</strong> {{ alert.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') if alert.created_at else 'N/A' }}</div>
+          <div class="mb-1"><strong>Event Time:</strong> {{ alert.timestamp.strftime('%Y-%m-%d %H:%M:%S') if alert.timestamp else 'N/A' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Threat Intel Modal -->
+<div class="modal fade" id="enrichModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content soc-modal">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-search me-2 text-info"></i>Threat Intelligence Enrichment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="enrich-loading" class="text-center py-4">
+          <div class="spinner-border text-info"></div>
+          <p class="mt-2 text-muted">Enriching with VirusTotal, AbuseIPDB, OTX...</p>
+        </div>
+        <div id="enrich-result" class="d-none">
+          <div class="ti-section mb-3">
+            <h6 class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>Reputation Score</h6>
+            <div class="progress mb-2">
+              <div class="progress-bar bg-danger" id="reputation-bar"></div>
+            </div>
+            <small id="reputation-text" class="text-muted"></small>
+          </div>
+          <div class="ti-section mb-3">
+            <h6><i class="bi bi-info-circle me-1"></i>Provider Data</h6>
+            <ul id="provider-list" class="small list-unstyled"></ul>
+          </div>
+          <div class="ti-section mb-3">
+            <h6><i class="bi bi-tag me-1"></i>Tags & Classification</h6>
+            <div id="tags-div" class="small"></div>
+          </div>
+        </div>
+        <div id="enrich-error" class="d-none alert alert-warning">
+          <i class="bi bi-exclamation-circle me-1"></i><span id="enrich-error-text"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function enrichThreatIntel(id) {
+  const modal = new bootstrap.Modal(document.getElementById('enrichModal'));
+  document.getElementById('enrich-loading').classList.remove('d-none');
+  document.getElementById('enrich-result').classList.add('d-none');
+  document.getElementById('enrich-error').classList.add('d-none');
+  modal.show();
+  
+  fetch(`/alerts/${id}/enrich`, { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('enrich-loading').classList.add('d-none');
+      
+      if (!data.success) {
+        document.getElementById('enrich-error').classList.remove('d-none');
+        document.getElementById('enrich-error-text').textContent = data.error || 'Enrichment failed';
+        return;
+      }
+      
+      const enrich = data.enrichment;
+      
+      // Reputation bar
+      const rep = Math.round((enrich.reputation_score || 0.5) * 100);
+      document.getElementById('reputation-bar').style.width = rep + '%';
+      document.getElementById('reputation-text').textContent = `Reputation Score: ${rep}% (${enrich.malicious_score ? 'Malicious' : 'Unknown'})`;
+      
+      // Provider data
+      let providers = '<li><strong>VirusTotal:</strong> ' + (enrich.virustotal_data ? 'Found' : 'Not found') + '</li>';
+      providers += '<li><strong>AbuseIPDB:</strong> ' + (enrich.abuseipdb_data ? 'Found' : 'Not found') + '</li>';
+      providers += '<li><strong>OTX:</strong> ' + (enrich.otx_data ? 'Found' : 'Not found') + '</li>';
+      if (enrich.country) providers += '<li><strong>Location:</strong> ' + enrich.country + '</li>';
+      if (enrich.isp) providers += '<li><strong>ISP:</strong> ' + enrich.isp + '</li>';
+      if (enrich.asn) providers += '<li><strong>ASN:</strong> ' + enrich.asn + '</li>';
+      document.getElementById('provider-list').innerHTML = providers;
+      
+      // Tags
+      if (enrich.tags && enrich.tags.length) {
+        document.getElementById('tags-div').innerHTML = enrich.tags.map(t => `<span class="badge bg-secondary me-1">${t}</span>`).join('');
+      } else {
+        document.getElementById('tags-div').innerHTML = '<span class="text-muted">No tags</span>';
+      }
+      
+      document.getElementById('enrich-result').classList.remove('d-none');
+    })
+    .catch(e => {
+      document.getElementById('enrich-loading').classList.add('d-none');
+      document.getElementById('enrich-error').classList.remove('d-none');
+      document.getElementById('enrich-error-text').textContent = 'Enrichment error: ' + e.message;
+    });
+}
+
+function markFP(id) {
+  if (!confirm('Mark this alert as false positive?')) return;
+  fetch(`/alerts/${id}/false-positive`, {method:'POST'})
+    .then(() => location.reload());
+}
+</script>
+{% endblock %}

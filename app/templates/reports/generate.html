@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Generate Report{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="bi bi-file-earmark-arrow-down me-2 text-primary"></i>Generate Security Report</h4></div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="soc-card">
+      <div class="soc-card-header">Report Configuration</div>
+      <div class="soc-card-body">
+        <form method="POST" id="gen-form">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Report Format</label>
+            <div class="row g-2">
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="report_type" id="pdf" value="pdf" checked/>
+                <label class="btn btn-outline-danger w-100" for="pdf">
+                  <i class="bi bi-file-pdf me-2"></i>PDF Report
+                </label>
+              </div>
+              <div class="col-6">
+                <input type="radio" class="btn-check" name="report_type" id="csv" value="csv"/>
+                <label class="btn btn-outline-success w-100" for="csv">
+                  <i class="bi bi-file-spreadsheet me-2"></i>CSV Export
+                </label>
+              </div>
+            </div>
+          </div>
+
+
+          <button type="submit" class="btn btn-primary w-100 btn-lg" id="gen-btn">
+            <i class="bi bi-file-earmark-arrow-down me-2"></i>Generate &amp; Download
+          </button>
+          <p class="text-muted small text-center mt-2">
+            Report will cover <strong>{{ uploads|length }}</strong> active upload(s) only.
+            Deleted uploads are excluded.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <!-- Active scope -->
+    <div class="soc-card mb-3">
+      <div class="soc-card-header">
+        <i class="bi bi-database-check me-2 text-success"></i>Active Data Scope
+      </div>
+      <div class="soc-card-body">
+        {% if uploads %}
+        <p class="text-muted small mb-2">This report will include data from:</p>
+        {% for u in uploads %}
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="bi bi-file-earmark-text text-info"></i>
+          <div>
+            <div class="small fw-semibold">{{ u.original_name }}</div>
+            <div class="text-muted" style="font-size:.7rem;">
+              {{ u.log_type }} · {{ u.parsed_lines or 0 }} entries · {{ u.threat_count or 0 }} threats
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <hr class="my-2"/>
+        <div class="row g-2 text-center">
+          <div class="col-6">
+            <div class="text-muted small">Total Logs</div>
+            <div class="fw-bold text-primary">{{ stats.total_logs }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Total Alerts</div>
+            <div class="fw-bold text-warning">{{ stats.total_alerts }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Critical</div>
+            <div class="fw-bold text-danger">{{ stats.critical_alerts }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Incidents</div>
+            <div class="fw-bold text-info">{{ stats.total_incidents }}</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-3">
+          <i class="bi bi-exclamation-circle fs-3 d-block mb-2"></i>
+          No active uploads found.<br/>
+          <a href="{{ url_for('logs.upload') }}">Upload logs first.</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="soc-card">
+      <div class="soc-card-header">Report Contents</div>
+      <div class="soc-card-body">
+        <ul class="list-unstyled mb-0">
+          {% for item in [
+            'Executive Summary',
+            'Threat Statistics (active uploads only)',
+            'Severity Distribution',
+            'Top Threat Types',
+            'Top Attack Source IPs',
+            'Active Incidents List',
+            'MITRE ATT&CK Mappings',
+            'Security Recommendations',
+          ] %}
+          <li class="mb-2 small">
+            <i class="bi bi-check-circle text-success me-2"></i>{{ item }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('gen-form').addEventListener('submit', function() {
+  const btn = document.getElementById('gen-btn');
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+  btn.disabled = true;
+});
+</script>
+{% endblock %}

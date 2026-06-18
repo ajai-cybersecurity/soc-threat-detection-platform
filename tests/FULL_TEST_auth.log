@@ -1,0 +1,66 @@
+Jan 10 08:00:01 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54321 ssh2
+Jan 10 08:00:02 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54322 ssh2
+Jan 10 08:00:03 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54323 ssh2
+Jan 10 08:00:04 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54324 ssh2
+Jan 10 08:00:05 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54325 ssh2
+Jan 10 08:00:06 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54326 ssh2
+Jan 10 08:00:07 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54327 ssh2
+Jan 10 08:00:08 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54328 ssh2
+Jan 10 08:00:09 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54329 ssh2
+Jan 10 08:00:10 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54330 ssh2
+Jan 10 08:00:11 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54331 ssh2
+Jan 10 08:00:12 webserver01 sshd[1001]: Failed password for root from 185.220.101.34 port 54332 ssh2
+Jan 10 08:00:13 webserver01 sshd[1001]: error: maximum authentication attempts exceeded for invalid user admin from 185.220.101.34 port 54333 ssh2
+Jan 10 08:01:00 webserver01 sshd[1002]: Invalid user admin from 192.168.100.55 port 44100
+Jan 10 08:01:01 webserver01 sshd[1002]: Invalid user oracle from 192.168.100.55 port 44101
+Jan 10 08:01:02 webserver01 sshd[1002]: Invalid user postgres from 192.168.100.55 port 44102
+Jan 10 08:01:03 webserver01 sshd[1002]: Invalid user mysql from 192.168.100.55 port 44103
+Jan 10 08:01:04 webserver01 sshd[1002]: Invalid user ftp from 192.168.100.55 port 44104
+Jan 10 08:01:05 webserver01 sshd[1002]: Invalid user pi from 192.168.100.55 port 44105
+Jan 10 08:01:06 webserver01 sshd[1002]: Invalid user ubuntu from 192.168.100.55 port 44106
+Jan 10 08:01:07 webserver01 sshd[1002]: Invalid user test from 192.168.100.55 port 44107
+Jan 10 08:01:08 webserver01 sshd[1002]: Invalid user git from 192.168.100.55 port 44108
+Jan 10 08:01:09 webserver01 sshd[1002]: Invalid user jenkins from 192.168.100.55 port 44109
+Jan 10 08:05:00 webserver01 sshd[1003]: Failed password for admin from 10.0.0.50 port 22222 ssh2
+Jan 10 08:05:01 webserver01 sshd[1003]: Failed password for admin from 10.0.0.51 port 22223 ssh2
+Jan 10 08:05:02 webserver01 sshd[1003]: Failed password for admin from 10.0.0.52 port 22224 ssh2
+Jan 10 08:05:03 webserver01 sshd[1003]: Failed password for admin from 10.0.0.53 port 22225 ssh2
+Jan 10 08:05:04 webserver01 sshd[1003]: Failed password for admin from 10.0.0.54 port 22226 ssh2
+Jan 10 08:05:05 webserver01 sshd[1003]: Failed password for admin from 10.0.0.55 port 22227 ssh2
+Jan 10 08:10:00 webserver01 sshd[2001]: Accepted password for devuser from 10.10.0.5 port 60001 ssh2
+Jan 10 08:10:01 webserver01 sshd[2001]: pam_unix(sshd:session): session opened for user devuser by (uid=0)
+Jan 10 08:15:00 webserver01 sudo: devuser : TTY=pts/0 ; PWD=/home/devuser ; USER=root ; COMMAND=/bin/bash
+Jan 10 08:15:05 webserver01 sudo: devuser : TTY=pts/0 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/useradd backdoor
+Jan 10 08:15:10 webserver01 sudo: devuser : TTY=pts/0 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/passwd backdoor
+Jan 10 08:15:15 webserver01 sudo: devuser : TTY=pts/0 ; PWD=/root ; USER=root ; COMMAND=/usr/sbin/usermod -aG sudo backdoor
+Jan 10 08:20:00 webserver01 sshd[3001]: ROOT LOGIN on tty1 from 10.10.0.5
+Jan 10 09:00:00 webserver01 sudo: john : TTY=pts/1 ; PWD=/home/john ; USER=root ; COMMAND=/bin/cat /etc/shadow
+Jan 10 09:00:05 webserver01 sudo: john : 3 incorrect password attempts ; TTY=pts/1 ; USER=root ; COMMAND=/bin/su
+Jan 10 09:05:00 webserver01 sshd[4001]: Failed password for john from 203.0.113.99 port 11111 ssh2
+Jan 10 09:05:01 webserver01 sshd[4001]: Failed password for john from 203.0.113.99 port 11112 ssh2
+Jan 10 09:05:02 webserver01 sshd[4001]: Failed password for john from 203.0.113.99 port 11113 ssh2
+Jan 10 09:05:03 webserver01 sshd[4001]: Failed password for john from 203.0.113.99 port 11114 ssh2
+Jan 10 09:05:04 webserver01 sshd[4001]: Failed password for john from 203.0.113.99 port 11115 ssh2
+Jan 10 09:05:05 webserver01 sshd[4001]: Failed password for alice from 203.0.113.99 port 11116 ssh2
+Jan 10 09:05:06 webserver01 sshd[4001]: Failed password for alice from 203.0.113.99 port 11117 ssh2
+Jan 10 09:05:07 webserver01 sshd[4001]: Failed password for bob from 203.0.113.99 port 11118 ssh2
+Jan 10 09:05:08 webserver01 sshd[4001]: Failed password for bob from 203.0.113.99 port 11119 ssh2
+Jan 10 09:05:09 webserver01 sshd[4001]: Failed password for sysadmin from 203.0.113.99 port 11120 ssh2
+Jan 10 09:05:10 webserver01 sshd[4001]: Failed password for deploy from 203.0.113.99 port 11121 ssh2
+Jan 10 09:05:11 webserver01 sshd[4001]: Failed password for ubuntu from 203.0.113.99 port 11122 ssh2
+Jan 10 09:30:00 webserver01 sshd[5001]: Accepted password for alice from 192.168.1.10 port 50001 ssh2
+Jan 10 09:30:01 webserver01 sshd[5001]: pam_unix(sshd:session): session opened for user alice by (uid=1001)
+Jan 10 01:30:00 webserver01 sshd[6001]: Accepted password for bob from 45.33.32.156 port 33333 ssh2
+Jan 10 01:30:05 webserver01 sshd[6001]: pam_unix(sshd:session): session opened for user bob by (uid=1002)
+Jan 10 02:45:00 webserver01 sshd[7001]: Accepted password for alice from 185.220.101.34 port 44444 ssh2
+Jan 10 10:00:00 webserver01 sshd[8001]: Accepted password for alice from 10.10.0.1 port 55555 ssh2
+Jan 10 10:30:00 webserver01 sshd[9001]: Accepted publickey for svcaccount from 10.0.0.1 port 60002 ssh2
+Jan 10 11:00:00 webserver01 sudo: alice : TTY=pts/2 ; PWD=/home/alice ; USER=root ; COMMAND=/usr/bin/crontab -e
+Jan 10 11:05:00 webserver01 sudo: alice : TTY=pts/2 ; PWD=/root ; USER=root ; COMMAND=/bin/chmod 777 /etc/cron.d/malicious
+Jan 10 11:10:00 webserver01 sshd[9002]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.1 user=root
+Jan 10 11:10:01 webserver01 sshd[9002]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.1 user=root
+Jan 10 11:10:02 webserver01 sshd[9002]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.1 user=admin
+Jan 10 11:15:00 webserver01 sshd[9003]: Failed password for invalid user www-data from 198.51.100.7 port 22100 ssh2
+Jan 10 11:15:01 webserver01 sshd[9003]: Failed password for invalid user apache from 198.51.100.7 port 22101 ssh2
+Jan 10 11:15:02 webserver01 sshd[9003]: Failed password for invalid user nginx from 198.51.100.7 port 22102 ssh2
+Jan 10 11:20:00 webserver01 sshd[9999]: Received disconnect from 185.220.101.34 port 54400

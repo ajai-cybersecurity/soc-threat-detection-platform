@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Forensics{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-search me-2 text-primary"></i>Digital Forensics</h4>
+  <a href="{{ url_for('forensics.add_artifact') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus me-1"></i>Add Artifact</a>
+</div>
+
+<!-- Hash Checker -->
+<div class="soc-card mb-4">
+  <div class="soc-card-header"><i class="bi bi-hash me-2 text-warning"></i>Hash Analysis</div>
+  <div class="soc-card-body">
+    <div class="row g-3">
+      <div class="col-md-8">
+        <input type="text" id="hash-input" class="form-control font-monospace" placeholder="Enter text or file hash to compute/check..."/>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-warning w-100" onclick="checkHash()"><i class="bi bi-cpu me-1"></i>Compute Hashes</button>
+      </div>
+    </div>
+    <div id="hash-result" class="mt-3 d-none">
+      <div class="row g-2">
+        <div class="col-md-4"><div class="hash-display"><span class="text-muted small">MD5</span><code id="md5" class="d-block text-warning small"></code></div></div>
+        <div class="col-md-4"><div class="hash-display"><span class="text-muted small">SHA1</span><code id="sha1" class="d-block text-info small"></code></div></div>
+        <div class="col-md-4"><div class="hash-display"><span class="text-muted small">SHA256</span><code id="sha256" class="d-block text-success small"></code></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Artifacts Table -->
+<div class="soc-card">
+  <div class="soc-card-header"><i class="bi bi-collection me-2"></i>Collected Artifacts ({{ artifacts|length }})</div>
+  <div class="soc-card-body p-0">
+    <table class="table table-dark table-hover mb-0">
+      <thead><tr><th>Type</th><th>Name</th><th>SHA256</th><th>Incident</th><th>Malicious</th><th>Collected</th></tr></thead>
+      <tbody>
+      {% for a in artifacts %}
+      <tr>
+        <td><span class="badge bg-secondary">{{ a.artifact_type }}</span></td>
+        <td>{{ a.name }}</td>
+        <td><code class="small text-muted">{{ (a.sha256_hash or '')[:20] }}...</code></td>
+        <td class="small">{{ a.incident_id or '-' }}</td>
+        <td>
+          {% if a.is_malicious == True %}<span class="badge bg-danger">Malicious</span>
+          {% elif a.is_malicious == False %}<span class="badge bg-success">Clean</span>
+          {% else %}<span class="badge bg-secondary">Unknown</span>{% endif %}
+        </td>
+        <td class="text-muted small">{{ a.collected_at.strftime('%m/%d %H:%M') if a.collected_at else '' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted py-4">No artifacts collected.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function checkHash() {
+  const val = document.getElementById('hash-input').value.trim();
+  if (!val) return;
+  fetch('/forensics/hash-check', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({value:val})})
+    .then(r=>r.json()).then(d=>{
+      document.getElementById('hash-result').classList.remove('d-none');
+      document.getElementById('md5').textContent   = d.hashes.md5;
+      document.getElementById('sha1').textContent  = d.hashes.sha1;
+      document.getElementById('sha256').textContent = d.hashes.sha256;
+    });
+}
+</script>
+{% endblock %}

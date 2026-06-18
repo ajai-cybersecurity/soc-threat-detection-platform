@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Events>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>4625</EventID>
+  <TimeCreated SystemTime="2024-01-15T08:00:01.000Z"/>
+  <Computer>WORKSTATION01</Computer>
+  <Channel>Security</Channel>
+ </System>
+ <EventData>
+  <Data Name="SubjectUserName">SYSTEM</Data>
+  <Data Name="TargetUserName">Administrator</Data>
+  <Data Name="IpAddress">192.168.1.100</Data>
+  <Data Name="LogonType">3</Data>
+  <Data Name="FailureReason">Unknown user name or bad password</Data>
+ </EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>4625</EventID>
+  <TimeCreated SystemTime="2024-01-15T08:00:02.000Z"/>
+  <Computer>WORKSTATION01</Computer>
+  <Channel>Security</Channel>
+ </System>
+ <EventData>
+  <Data Name="TargetUserName">Administrator</Data>
+  <Data Name="IpAddress">192.168.1.100</Data>
+  <Data Name="LogonType">3</Data>
+ </EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>4672</EventID>
+  <TimeCreated SystemTime="2024-01-15T08:30:00.000Z"/>
+  <Computer>DC01</Computer>
+  <Channel>Security</Channel>
+ </System>
+ <EventData>
+  <Data Name="SubjectUserName">john.admin</Data>
+  <Data Name="IpAddress">10.0.0.55</Data>
+  <Data Name="PrivilegeList">SeDebugPrivilege SeImpersonatePrivilege</Data>
+ </EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>4720</EventID>
+  <TimeCreated SystemTime="2024-01-15T09:00:00.000Z"/>
+  <Computer>DC01</Computer>
+  <Channel>Security</Channel>
+ </System>
+ <EventData>
+  <Data Name="TargetUserName">backdoor_user</Data>
+  <Data Name="SubjectUserName">SYSTEM</Data>
+  <Data Name="IpAddress">10.0.0.55</Data>
+ </EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>4698</EventID>
+  <TimeCreated SystemTime="2024-01-15T09:05:00.000Z"/>
+  <Computer>DC01</Computer>
+  <Channel>Security</Channel>
+ </System>
+ <EventData>
+  <Data Name="SubjectUserName">SYSTEM</Data>
+  <Data Name="TaskName">MaliciousTask</Data>
+  <Data Name="TaskContent">cmd.exe /c powershell.exe -enc base64payload</Data>
+ </EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>4740</EventID>
+  <TimeCreated SystemTime="2024-01-15T09:10:00.000Z"/>
+  <Computer>WORKSTATION01</Computer>
+  <Channel>Security</Channel>
+ </System>
+ <EventData>
+  <Data Name="TargetUserName">jsmith</Data>
+  <Data Name="IpAddress">192.168.1.100</Data>
+ </EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>1102</EventID>
+  <TimeCreated SystemTime="2024-01-15T10:00:00.000Z"/>
+  <Computer>ATTACKER-PC</Computer>
+  <Channel>Security</Channel>
+ </System>
+ <EventData>
+  <Data Name="SubjectUserName">Administrator</Data>
+ </EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System>
+  <EventID>7045</EventID>
+  <TimeCreated SystemTime="2024-01-15T10:05:00.000Z"/>
+  <Computer>SERVER01</Computer>
+  <Channel>System</Channel>
+ </System>
+ <EventData>
+  <Data Name="ServiceName">MaliciousSvc</Data>
+  <Data Name="ImagePath">C:\Windows\Temp\svchost32.exe</Data>
+  <Data Name="ServiceType">User Mode Service</Data>
+ </EventData>
+</Event>
+</Events>

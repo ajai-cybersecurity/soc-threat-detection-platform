@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block auth_content %}
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <i class="bi bi-shield-fill-check text-success" style="font-size:3rem;"></i>
+      <h2 class="mt-2 fw-bold">Create Account</h2>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}<div class="alert alert-{{ cat }}">{{ msg }}</div>{% endfor %}
+    {% endwith %}
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" required/>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" required/>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" minlength="8" required/>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Role</label>
+        <select name="role" class="form-select">
+          <option value="analyst">SOC Analyst</option>
+          <option value="viewer">Viewer</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success w-100">Register</button>
+    </form>
+    <hr/>
+    <p class="text-center text-muted small">
+      Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}{{ incident.incident_id }}{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <div>
+    <h4><i class="bi bi-fire me-2 text-warning"></i>{{ incident.title }}</h4>
+    <small class="font-monospace text-muted">{{ incident.incident_id }}</small>
+  </div>
+  <div class="d-flex gap-2">
+    <span class="sev-badge sev-{{ incident.severity }} fs-6">{{ incident.severity|upper }}</span>
+    <span class="status-badge status-{{ incident.status }}">{{ incident.status }}</span>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <!-- Details -->
+    <div class="soc-card mb-3">
+      <div class="soc-card-header">Incident Details</div>
+      <div class="soc-card-body">
+        <div class="row g-3 mb-3">
+          {% for label, val in [('Source IP', incident.source_ip or 'N/A'),('Target Asset', incident.target_asset or 'N/A'),('Threat Type', incident.threat_type or 'N/A'),('Created', incident.created_at.strftime('%Y-%m-%d %H:%M UTC') if incident.created_at else 'N/A')] %}
+          <div class="col-md-6">
+            <span class="detail-label">{{ label }}</span>
+            <div class="detail-value font-monospace">{{ val }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        <p>{{ incident.description or 'No description.' }}</p>
+      </div>
+    </div>
+
+    <!-- Attack Timeline -->
+    {% if timeline %}
+    <div class="soc-card mb-3">
+      <div class="soc-card-header"><i class="bi bi-clock-history me-2 text-primary"></i>Attack Timeline</div>
+      <div class="soc-card-body">
+        <div class="timeline">
+          {% for event in timeline %}
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="small text-muted">{{ event.time[:16] if event.time else '' }}</div>
+              <div>{{ event.event }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Related Alerts -->
+    {% if related_alerts %}
+    <div class="soc-card mb-3">
+      <div class="soc-card-header"><i class="bi bi-exclamation-triangle me-2"></i>Related Alerts ({{ related_alerts|length }})</div>
+      <div class="soc-card-body p-0">
+        <table class="table table-dark table-sm mb-0">
+          <thead><tr><th>Severity</th><th>Title</th><th>Time</th></tr></thead>
+          <tbody>
+          {% for a in related_alerts %}
+          <tr>
+            <td><span class="sev-badge sev-{{ a.severity }}">{{ a.severity|upper }}</span></td>
+            <td>{{ a.title[:60] }}</td>
+            <td class="text-muted small">{{ a.created_at.strftime('%m/%d %H:%M') if a.created_at else '' }}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Analyst Comments -->
+    <div class="soc-card mb-3">
+      <div class="soc-card-header"><i class="bi bi-chat-dots me-2"></i>Analyst Notes ({{ comments|length }})</div>
+      <div class="soc-card-body">
+        {% for c in comments %}
+        <div class="comment-item">
+          <div class="d-flex justify-content-between mb-1">
+            <strong class="text-primary">{{ c.author.username if c.author else 'Unknown' }}</strong>
+            <small class="text-muted">{{ c.created_at.strftime('%Y-%m-%d %H:%M') if c.created_at else '' }}</small>
+          </div>
+          <p class="mb-0">{{ c.comment }}</p>
+        </div>
+        {% else %}
+        <p class="text-muted">No comments yet.</p>
+        {% endfor %}
+        <form method="POST" action="{{ url_for('incidents.add_comment', incident_id=incident.id) }}" class="mt-3">
+          <div class="mb-2">
+            <textarea name="comment" class="form-control" rows="3" placeholder="Add investigation notes..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Add Note</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <!-- Update Status -->
+    <div class="soc-card mb-3">
+      <div class="soc-card-header">Update Incident</div>
+      <div class="soc-card-body">
+        <form method="POST" action="{{ url_for('incidents.update', incident_id=incident.id) }}">
+          <div class="mb-2">
+            <label class="form-label small">Status</label>
+            <select name="status" class="form-select form-select-sm">
+              {% for s in ['open','investigating','contained','resolved','closed'] %}
+              <option value="{{ s }}" {% if incident.status==s %}selected{% endif %}>{{ s|capitalize }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small">Severity</label>
+            <select name="severity" class="form-select form-select-sm">
+              {% for s in ['critical','high','medium','low'] %}
+              <option value="{{ s }}" {% if incident.severity==s %}selected{% endif %}>{{ s|capitalize }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small">Target Asset</label>
+            <input type="text" name="target_asset" class="form-control form-control-sm" value="{{ incident.target_asset or '' }}"/>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small">Analyst Notes</label>
+            <textarea name="analyst_notes" class="form-control form-control-sm" rows="3">{{ incident.analyst_notes or '' }}</textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm w-100">Update</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- MITRE -->
+    {% if mitre %}
+    <div class="soc-card mb-3">
+      <div class="soc-card-header"><i class="bi bi-diagram-3 me-2 text-info"></i>MITRE ATT&amp;CK</div>
+      <div class="soc-card-body">
+        <pre class="small text-info">{{ mitre | tojson(indent=2) }}</pre>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

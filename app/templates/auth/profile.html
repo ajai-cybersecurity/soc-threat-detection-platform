@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="bi bi-person-circle me-2"></i>My Profile</h4></div>
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="soc-card">
+      <div class="soc-card-header">Account Details</div>
+      <div class="soc-card-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for cat, msg in messages %}<div class="alert alert-{{ cat }}">{{ msg }}</div>{% endfor %}
+        {% endwith %}
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" value="{{ current_user.username }}" readonly/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ current_user.email }}"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Department</label>
+            <input type="text" name="department" class="form-control" value="{{ current_user.department }}"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">New Password (leave blank to keep current)</label>
+            <input type="password" name="new_password" class="form-control" minlength="8"/>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="soc-card">
+      <div class="soc-card-header">Account Information</div>
+      <div class="soc-card-body">
+        <table class="table table-sm">
+          <tr><td class="text-muted">Role</td><td><span class="badge bg-primary">{{ current_user.role }}</span></td></tr>
+          <tr><td class="text-muted">Organization</td><td>{{ current_user.organization }}</td></tr>
+          <tr><td class="text-muted">Last Login</td><td>{{ current_user.last_login or 'Never' }}</td></tr>
+          <tr><td class="text-muted">Account Created</td><td>{{ current_user.created_at.strftime('%Y-%m-%d') if current_user.created_at else '' }}</td></tr>
+          <tr><td class="text-muted">Status</td><td><span class="badge bg-success">Active</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

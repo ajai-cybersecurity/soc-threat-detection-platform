@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}SOC Platform{% endblock %} | Threat Detection Platform</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/soc.css') }}"/>
+</head>
+<body class="soc-body">
+
+{% if current_user.is_authenticated %}
+<!-- ── Sidebar ──────────────────────────────────────────────── -->
+<div class="soc-sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">
+      <i class="bi bi-shield-fill-exclamation text-danger fs-4"></i>
+      <span class="brand-text">SOC Platform</span>
+    </div>
+    <small class="text-muted">Enterprise Edition</small>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">MONITORING</div>
+    <a href="{{ url_for('dashboard.index') }}" class="nav-item {% if request.endpoint and 'dashboard' in request.endpoint %}active{% endif %}">
+      <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+    </a>
+    <a href="{{ url_for('alerts.index') }}" class="nav-item {% if request.endpoint and 'alerts' in request.endpoint %}active{% endif %}">
+      <i class="bi bi-exclamation-triangle-fill"></i><span>Alerts</span>
+      {% set c = namespace(v=0) %}
+      {% if stats is defined %}{% set c.v = stats.get('critical_alerts',0) %}{% endif %}
+    </a>
+    <a href="{{ url_for('incidents.index') }}" class="nav-item {% if request.endpoint and 'incidents' in request.endpoint %}active{% endif %}">
+      <i class="bi bi-fire"></i><span>Incidents</span>
+    </a>
+
+    <div class="nav-section-label">ANALYSIS</div>
+    <a href="{{ url_for('logs.index') }}" class="nav-item {% if request.endpoint and 'logs' in request.endpoint %}active{% endif %}">
+      <i class="bi bi-journal-text"></i><span>Log Analysis</span>
+    </a>
+    <a href="{{ url_for('logs.upload') }}" class="nav-item {% if request.endpoint == 'logs.upload' %}active{% endif %}">
+      <i class="bi bi-upload"></i><span>Upload Logs</span>
+    </a>
+    <a href="{{ url_for('forensics.index') }}" class="nav-item {% if request.endpoint and 'forensics' in request.endpoint %}active{% endif %}">
+      <i class="bi bi-search"></i><span>Forensics</span>
+    </a>
+
+    <div class="nav-section-label">INTELLIGENCE</div>
+    <a href="{{ url_for('intelligence.index') }}" class="nav-item {% if request.endpoint and 'intelligence' in request.endpoint %}active{% endif %}">
+      <i class="bi bi-globe2"></i><span>Threat Intel</span>
+    </a>
+    <a href="{{ url_for('intelligence.lookup') }}" class="nav-item">
+      <i class="bi bi-radar"></i><span>IP/Hash Lookup</span>
+    </a>
+
+    <div class="nav-section-label">REPORTS</div>
+    <a href="{{ url_for('reports.index') }}" class="nav-item {% if request.endpoint and 'reports' in request.endpoint %}active{% endif %}">
+      <i class="bi bi-file-earmark-bar-graph"></i><span>Reports</span>
+    </a>
+    <a href="{{ url_for('reports.generate') }}" class="nav-item">
+      <i class="bi bi-file-earmark-arrow-down"></i><span>Generate Report</span>
+    </a>
+
+    {% if current_user.role == 'admin' %}
+    <div class="nav-section-label">ADMIN</div>
+    <a href="{{ url_for('auth.profile') }}" class="nav-item">
+      <i class="bi bi-people"></i><span>User Management</span>
+    </a>
+    {% endif %}
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar"><i class="bi bi-person-circle fs-4"></i></div>
+      <div class="user-details">
+        <div class="user-name">{{ current_user.username }}</div>
+        <div class="user-role badge bg-primary">{{ current_user.role }}</div>
+      </div>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm w-100 mt-2">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- ── Main Content ─────────────────────────────────────────── -->
+<div class="soc-main" id="main-content">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <button class="btn btn-sm btn-outline-secondary" id="sidebar-toggle">
+      <i class="bi bi-list fs-5"></i>
+    </button>
+    <div class="topbar-center">
+      <div class="status-indicator">
+        <span class="status-dot bg-success"></span>
+        <span class="text-muted small">System Active</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="text-muted small me-3" id="live-clock"></span>
+      <a href="{{ url_for('alerts.index') }}?severity=critical" class="btn btn-danger btn-sm me-2">
+        <i class="bi bi-bell-fill"></i>
+      </a>
+      <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-person"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Flash messages -->
+  <div class="px-4 pt-2">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }} alert-dismissible fade show" role="alert">
+            <i class="bi bi-{% if cat=='success' %}check-circle{% elif cat=='danger' %}exclamation-octagon{% else %}info-circle{% endif %} me-2"></i>
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Page Content -->
+  <div class="page-content">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+{% else %}
+  {% block auth_content %}{% endblock %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/soc.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

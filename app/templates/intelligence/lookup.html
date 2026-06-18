@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}IP / Hash Lookup{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="bi bi-radar me-2 text-info"></i>Threat Intelligence Lookup</h4></div>
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="soc-card">
+      <div class="soc-card-header">Lookup Indicator</div>
+      <div class="soc-card-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for cat, msg in messages %}<div class="alert alert-{{ cat }}">{{ msg }}</div>{% endfor %}
+        {% endwith %}
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Indicator</label>
+            <input type="text" name="indicator" class="form-control font-monospace"
+                   placeholder="IP, domain, or file hash" required
+                   value="{{ result.indicator if result else '' }}"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Type</label>
+            <select name="type" class="form-select">
+              <option value="ip">IP Address</option>
+              <option value="domain">Domain</option>
+              <option value="hash">File Hash (MD5/SHA256)</option>
+              <option value="url">URL</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" id="lookup-btn">
+            <i class="bi bi-search me-2"></i>Run Lookup
+          </button>
+        </form>
+        <div class="mt-3">
+          <small class="text-muted">Supported sources: VirusTotal, AbuseIPDB, AlienVault OTX<br/>Configure API keys in .env to enable lookups.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if result %}
+  <div class="col-lg-7">
+    <div class="soc-card">
+      <div class="soc-card-header d-flex justify-content-between">
+        <span>Results for: <span class="font-monospace text-warning">{{ result.indicator }}</span></span>
+        {% if result.best %}
+        <span class="badge {% if result.best.is_malicious %}bg-danger{% else %}bg-success{% endif %}">
+          {% if result.best.is_malicious %}MALICIOUS{% else %}CLEAN{% endif %}
+        </span>
+        {% endif %}
+      </div>
+      <div class="soc-card-body">
+        {% if result.error %}
+        <div class="alert alert-warning">{{ result.error }}</div>
+        {% endif %}
+        {% for src in result.sources %}
+        <div class="intel-source-card mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong class="text-primary">{{ src.source|upper }}</strong>
+            <span class="badge {% if src.is_malicious %}bg-danger{% else %}bg-success{% endif %}">
+              Score: {{ src.reputation_score }}%
+            </span>
+          </div>
+          <div class="row g-2 small">
+            {% if src.country %}<div class="col-6"><span class="text-muted">Country:</span> {{ src.country }}</div>{% endif %}
+            {% if src.asn %}<div class="col-6"><span class="text-muted">ASN:</span> {{ src.asn }}</div>{% endif %}
+            {% if src.isp %}<div class="col-6"><span class="text-muted">ISP:</span> {{ src.isp }}</div>{% endif %}
+            {% if src.total_reports %}<div class="col-6"><span class="text-muted">Reports:</span> {{ src.total_reports }}</div>{% endif %}
+            {% if src.pulse_count %}<div class="col-6"><span class="text-muted">OTX Pulses:</span> {{ src.pulse_count }}</div>{% endif %}
+          </div>
+          {% if src.tags %}<div class="mt-1 small text-muted">Tags: {{ src.tags }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+<script>
+document.querySelector('form').addEventListener('submit', function() {
+  const btn = document.getElementById('lookup-btn');
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Looking up...';
+  btn.disabled = true;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Threat Intelligence{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-globe2 me-2 text-info"></i>Threat Intelligence</h4>
+  <a href="{{ url_for('intelligence.lookup') }}" class="btn btn-primary btn-sm"><i class="bi bi-search me-1"></i>New Lookup</a>
+</div>
+<div class="soc-card">
+  <div class="soc-card-body p-0">
+    <table class="table table-dark table-hover mb-0">
+      <thead><tr><th>Indicator</th><th>Type</th><th>Source</th><th>Score</th><th>Malicious</th><th>Country</th><th>Tags</th><th>Checked</th></tr></thead>
+      <tbody>
+      {% for r in records %}
+      <tr>
+        <td class="font-monospace text-warning">{{ r.indicator }}</td>
+        <td><span class="badge bg-secondary">{{ r.indicator_type }}</span></td>
+        <td>{{ r.source }}</td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div class="progress" style="width:60px;height:6px;">
+              <div class="progress-bar {% if r.reputation_score >= 70 %}bg-danger{% elif r.reputation_score >= 40 %}bg-warning{% else %}bg-success{% endif %}"
+                   style="width:{{ r.reputation_score }}%"></div>
+            </div>
+            <span class="small">{{ r.reputation_score }}%</span>
+          </div>
+        </td>
+        <td>
+          {% if r.is_malicious %}<span class="badge bg-danger">MALICIOUS</span>
+          {% else %}<span class="badge bg-success">CLEAN</span>{% endif %}
+        </td>
+        <td class="small">{{ r.country or '-' }}</td>
+        <td class="small text-muted">{{ (r.tags or '')[:40] }}</td>
+        <td class="text-muted small">{{ r.last_checked.strftime('%m/%d %H:%M') if r.last_checked else '' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted py-4">No threat intelligence records. <a href="{{ url_for('intelligence.lookup') }}">Run a lookup.</a></td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

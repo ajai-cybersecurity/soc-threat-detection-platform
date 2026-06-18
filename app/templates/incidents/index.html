@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Incidents{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-fire me-2 text-warning"></i>Incident Management</h4>
+  <a href="{{ url_for('incidents.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>New Incident</a>
+</div>
+
+<div class="row g-3 mb-3">
+  {% for label, val, cls in [('Total',stats.total,'secondary'),('Open',stats.open,'danger'),('Investigating',stats.investigating,'warning'),('Critical',stats.critical,'danger')] %}
+  <div class="col-6 col-md-3">
+    <div class="kpi-card-sm">
+      <div class="kpi-value-sm text-{{ cls }}">{{ val }}</div>
+      <div class="kpi-label-sm">{{ label }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="soc-card mb-3">
+  <div class="soc-card-body">
+    <form method="GET" class="row g-2 align-items-end">
+      <div class="col-md-3"><input type="text" name="q" class="form-control form-control-sm" placeholder="Search..." value="{{ filters.q }}"/></div>
+      <div class="col-md-2">
+        <select name="status" class="form-select form-select-sm">
+          <option value="">All Statuses</option>
+          {% for s in ['open','investigating','contained','resolved','closed'] %}
+          <option value="{{ s }}" {% if filters.status==s %}selected{% endif %}>{{ s|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="severity" class="form-select form-select-sm">
+          <option value="">All Severities</option>
+          {% for s in ['critical','high','medium','low'] %}
+          <option value="{{ s }}" {% if filters.severity==s %}selected{% endif %}>{{ s|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1"><button type="submit" class="btn btn-primary btn-sm w-100">Filter</button></div>
+      <div class="col-md-1"><a href="{{ url_for('incidents.index') }}" class="btn btn-outline-secondary btn-sm w-100">Clear</a></div>
+    </form>
+  </div>
+</div>
+
+<div class="soc-card">
+  <div class="soc-card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover mb-0 soc-table">
+        <thead><tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Source IP</th><th>Target</th><th>Created</th><th></th></tr></thead>
+        <tbody>
+        {% for inc in incidents.items %}
+        <tr>
+          <td><a href="{{ url_for('incidents.view', incident_id=inc.id) }}" class="font-monospace text-info small">{{ inc.incident_id }}</a></td>
+          <td><a href="{{ url_for('incidents.view', incident_id=inc.id) }}" class="text-light">{{ inc.title[:55] }}</a></td>
+          <td><span class="sev-badge sev-{{ inc.severity }}">{{ inc.severity|upper }}</span></td>
+          <td><span class="status-badge status-{{ inc.status }}">{{ inc.status }}</span></td>
+          <td><span class="font-monospace text-warning small">{{ inc.source_ip or '-' }}</span></td>
+          <td class="small">{{ inc.target_asset or '-' }}</td>
+          <td class="text-muted small">{{ inc.created_at.strftime('%m/%d %H:%M') if inc.created_at else '-' }}</td>
+          <td><a href="{{ url_for('incidents.view', incident_id=inc.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-right"></i></a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="text-center text-muted py-5">No incidents found.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

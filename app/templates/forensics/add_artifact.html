@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Add Artifact{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="bi bi-plus-circle me-2"></i>Add Forensic Artifact</h4></div>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="soc-card">
+      <div class="soc-card-header">Artifact Details</div>
+      <div class="soc-card-body">
+        <form method="POST">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Artifact Type</label>
+              <select name="artifact_type" class="form-select">
+                {% for t in ['file','hash','process','network','registry','memory','other'] %}
+                <option value="{{ t }}">{{ t|capitalize }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Related Incident</label>
+              <select name="incident_id" class="form-select">
+                <option value="">None</option>
+                {% for inc in incidents %}
+                <option value="{{ inc.id }}">{{ inc.incident_id }} – {{ inc.title[:40] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Name / Identifier</label>
+            <input type="text" name="name" class="form-control" required placeholder="malware.exe, 192.168.1.100, HKLM\.."/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Value / Content</label>
+            <textarea name="value" class="form-control font-monospace" rows="3" placeholder="File path, hash value, process command line..."></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <textarea name="notes" class="form-control" rows="2"></textarea>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Artifact</button>
+            <a href="{{ url_for('forensics.index') }}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

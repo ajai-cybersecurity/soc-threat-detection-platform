@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  soc-platform:
+    build: .
+    container_name: soc_platform
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./reports_output:/app/reports_output
+      - ./instance:/app/instance
+      - ./.env:/app/.env:ro
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+    networks:
+      - soc-network
+
+  # Uncomment for PostgreSQL in production:
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: soc_platform
+  #     POSTGRES_USER: soc_user
+  #     POSTGRES_PASSWORD: secure_password
+  #   volumes:
+  #     - pg_data:/var/lib/postgresql/data
+  #   networks:
+  #     - soc-network
+
+networks:
+  soc-network:
+    driver: bridge
+
+volumes:
+  pg_data:

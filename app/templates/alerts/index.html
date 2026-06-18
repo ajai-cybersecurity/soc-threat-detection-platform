@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Alerts{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>Security Alerts</h4>
+  <div class="d-flex gap-2">
+    <span class="badge bg-danger fs-6">{{ stats.critical }} Critical</span>
+    <span class="badge bg-warning text-dark fs-6">{{ stats.high }} High</span>
+    <span class="badge bg-secondary fs-6">{{ stats.total }} Total</span>
+  </div>
+</div>
+
+<div class="soc-card mb-3">
+  <div class="soc-card-body">
+    <form method="GET" class="row g-2 align-items-end">
+      <div class="col-md-3"><input type="text" name="q" class="form-control form-control-sm" placeholder="Search..." value="{{ filters.q }}"/></div>
+      <div class="col-md-2">
+        <select name="severity" class="form-select form-select-sm">
+          <option value="">All Severities</option>
+          {% for s in ['critical','high','medium','low','informational'] %}
+          <option value="{{ s }}" {% if filters.severity==s %}selected{% endif %}>{{ s|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="threat_type" class="form-select form-select-sm">
+          <option value="">All Types</option>
+          {% for tt, _ in threat_types %}
+          <option value="{{ tt }}" {% if filters.threat_type==tt %}selected{% endif %}>{{ tt }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="status" class="form-select form-select-sm">
+          <option value="">All Statuses</option>
+          {% for s in ['open','investigating','closed'] %}
+          <option value="{{ s }}" {% if filters.status==s %}selected{% endif %}>{{ s|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-1"><button type="submit" class="btn btn-primary btn-sm w-100">Filter</button></div>
+      <div class="col-md-1"><a href="{{ url_for('alerts.index') }}" class="btn btn-outline-secondary btn-sm w-100">Clear</a></div>
+    </form>
+  </div>
+</div>
+
+<div class="soc-card">
+  <div class="soc-card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover mb-0 soc-table">
+        <thead>
+          <tr><th>Severity</th><th>Title</th><th>Threat Type</th><th>Source IP</th><th>Username</th><th>MITRE</th><th>Count</th><th>Time</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for a in alerts.items %}
+        <tr>
+          <td><span class="sev-badge sev-{{ a.severity }}">{{ a.severity|upper }}</span></td>
+          <td><a href="{{ url_for('alerts.view_alert', alert_id=a.id) }}" class="text-light">{{ a.title[:50] }}</a></td>
+          <td><span class="badge bg-secondary small">{{ a.threat_type }}</span></td>
+          <td><span class="font-monospace text-warning small">{{ a.source_ip or '-' }}</span></td>
+          <td class="small">{{ a.username or '-' }}</td>
+          <td class="small font-monospace text-info">{{ a.mitre_technique or '-' }}</td>
+          <td><span class="badge bg-dark border">{{ a.event_count }}</span></td>
+          <td class="text-muted small">{{ a.created_at.strftime('%m/%d %H:%M') if a.created_at else '-' }}</td>
+          <td><span class="status-badge status-{{ a.status }}">{{ a.status }}</span></td>
+          <td><a href="{{ url_for('alerts.view_alert', alert_id=a.id) }}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="10" class="text-center text-muted py-5">No alerts found. Upload logs to begin detection.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% if alerts.pages > 1 %}
+  <div class="soc-card-body border-top">
+    <nav><ul class="pagination pagination-sm mb-0 justify-content-center">
+      {% if alerts.has_prev %}<li class="page-item"><a class="page-link" href="?page={{ alerts.prev_num }}&severity={{ filters.severity }}&q={{ filters.q }}">Prev</a></li>{% endif %}
+      {% for p in alerts.iter_pages() %}
+        {% if p %}<li class="page-item {% if p==alerts.page %}active{% endif %}"><a class="page-link" href="?page={{ p }}&severity={{ filters.severity }}&q={{ filters.q }}">{{ p }}</a></li>
+        {% else %}<li class="page-item disabled"><span class="page-link">...</span></li>{% endif %}
+      {% endfor %}
+      {% if alerts.has_next %}<li class="page-item"><a class="page-link" href="?page={{ alerts.next_num }}&severity={{ filters.severity }}&q={{ filters.q }}">Next</a></li>{% endif %}
+    </ul></nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
