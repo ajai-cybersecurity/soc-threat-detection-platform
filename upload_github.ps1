@@ -3,7 +3,7 @@
 # ===============================
 
 $RepoName = "soc-threat-detection-platform"
-$GitHubUsername = "YOUR_GITHUB_USERNAME"
+$GitHubUsername = "ajai-cybersecurity"
 
 Write-Host ""
 Write-Host "====================================="
