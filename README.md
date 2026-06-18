@@ -1,297 +1,376 @@
-# SOC Platform
+# SOC Platform – Threat Detection & Incident Response System
 
-A Flask-based Security Operations Center (SOC) platform for log ingestion, threat detection, incident management, intelligence lookup, reporting, and AI-assisted analysis.
+![Python](https://img.shields.io/badge/Python-3.9+-blue)
+![Flask](https://img.shields.io/badge/Flask-Web%20Framework-green)
+![SQLite](https://img.shields.io/badge/Database-SQLite-orange)
+![MITRE ATT%26CK](https://img.shields.io/badge/MITRE-ATT%26CK-red)
+![Cybersecurity](https://img.shields.io/badge/Cybersecurity-SOC-purple)
 
-## Project Overview
+## Overview
 
-`SOC Platform` is a modular Flask application that lets security analysts upload logs, detect threats, create incidents, track alerts, generate reports, and leverage AI assistance.
+SOC Platform is a Security Operations Center (SOC) simulation platform built using Python Flask. It enables analysts to upload and analyze security logs, detect threats using rule-based detection logic, manage alerts and incidents, enrich indicators using threat intelligence sources, perform basic forensic analysis, and generate professional security reports.
 
-The app supports:
-- log uploads and parsing for Linux auth/syslog, Windows Event, Sysmon, firewall, Apache, and Nginx logs
-- rule-based threat detection and correlation into incidents
-- security alerts dashboard, filtering, and status management
-- incident creation, workflow, and comments
-- threat intelligence lookup and local record storage
-- AI analysis via OpenAI or Ollama for alert explanation and incident summaries
-- report generation in PDF and CSV formats
+The platform is designed to demonstrate core SOC analyst workflows and security monitoring concepts in a centralized web-based interface.
 
-## Repository Structure
+---
 
-Root files:
-- `run.py` — application entrypoint and Flask app launch script
-- `config.py` — configuration classes for development, production, and testing
-- `requirements.txt` — Python dependencies
-- `Dockerfile` — container image definition
-- `docker-compose.yml` — local service definition for running the app in Docker
-- `install.bat` — Windows install helper for dependencies
-- `start.bat` — Windows startup helper
-- `migrate_db.py` — one-time SQLite migration script
-- `README.md` — project documentation
+## Features
 
-Important directories:
-- `app/` — application package
-- `app/blueprints/` — Flask route modules for each feature area
-- `app/models/` — SQLAlchemy data model definitions and database setup
-- `app/parsers/` — log parsing logic and parser registry
-- `app/detectors/` — threat detection and correlation logic
-- `app/intelligence/` — threat intelligence API client
-- `app/reports/` — report generation utilities
-- `app/utils/` — shared helpers, validators, and utilities
-- `static/` — CSS, JavaScript, and image assets
-- `templates/` — Jinja2 HTML templates for UI pages
-- `uploads/` — user-uploaded log files
-- `reports_output/` — generated report files
-- `instance/` — runtime SQLite database and instance-specific data
-- `logs/` — application or analysis logs
-- `tests/` — sample datasets and test files
+### Security Dashboard
 
-## Key Application Components
+- Real-time SOC dashboard
+- Alert statistics
+- Incident statistics
+- Severity distribution
+- Threat trends visualization
+- Top attacker visibility
 
-### Entry Point
-- `run.py` creates the Flask app using `app.create_app` and starts the server on `0.0.0.0:5000`.
-- The app uses `FLASK_ENV` to select `development` or `production` configuration.
+### Log Analysis
 
-### Flask App Factory
-- `app/__init__.py` initializes the Flask application, SQLAlchemy, login manager, error handlers, health endpoint, and blueprint registration.
-- It also seeds default users into the database on startup if they do not already exist.
+Supports analysis of:
 
-### Configuration
-- `config.py` defines `Config`, `DevelopmentConfig`, `ProductionConfig`, and `TestingConfig`.
-- Important settings include:
-  - `SECRET_KEY`
-  - `SQLALCHEMY_DATABASE_URI`
-  - `UPLOAD_FOLDER`
-  - `REPORTS_FOLDER`
-  - `ALLOWED_EXTENSIONS`
-  - external API keys for malware/threat intelligence (`VIRUSTOTAL_API_KEY`, `ABUSEIPDB_API_KEY`, `OTX_API_KEY`)
-  - email settings for alert notifications
+- Windows Event Logs
+- Sysmon Logs
+- Linux Authentication Logs
+- Firewall Logs
+- Apache Access Logs
+- Nginx Access Logs
 
-### Data Models
-- `app/models/models.py` defines the application schema using SQLAlchemy:
-  - `User`
-  - `LogEntry`
-  - `LogUpload`
-  - `Alert`
-  - `Incident`
-  - `IncidentComment`
-  - `ThreatIntelligence`
-  - `Report`
-  - `AuditLog`
-  - behavior analytics models: `UserBehaviorBaseline`, `BehaviorAnomaly`
-  - `ForensicArtifact`
+Capabilities:
 
-## Feature Areas
+- Log upload
+- Automatic log type detection
+- Event parsing
+- Severity classification
+- Threat tagging
+- Search and filtering
 
-### Authentication
-Blueprint: `app/blueprints/auth.py`
-- `/auth/login` — user login
-- `/auth/logout` — sign out
-- `/auth/register` — create new user account
-- `/auth/profile` — update email, department, password
+---
 
-### Dashboard
-Blueprint: `app/blueprints/dashboard.py`
-- `/` — main SOC overview page
-- `/api/stats` — JSON dashboard statistics
-- `/api/live-alerts` — live alert feed
-- collects totals, trends, top source IPs, alert distribution, recent alerts/incidents
+### Threat Detection Engine
 
-### Log Management
-Blueprint: `app/blueprints/logs.py`
-- `/logs/` — threat-focused log viewer and filter
-- `/logs/entries` — full log entry browser
-- `/logs/upload` — upload log files for analysis
-- log upload flow:
-  - save uploaded file to `uploads/`
-  - detect log type automatically or honor user-selected type
-  - parse logs using parser modules
-  - save parsed logs to database
-  - create alerts and link to log uploads
+Rule-based detection framework capable of identifying:
+
+- Brute Force Attacks
+- Password Spray Attacks
+- Credential Stuffing
+- Account Lockouts
+- Privilege Escalation
+- Persistence Techniques
+- Defense Evasion
+- Suspicious Process Activity
+- Service Installation Events
+- Scheduled Task Modifications
+
+---
+
+### MITRE ATT&CK Mapping
+
+Detected threats are automatically mapped to MITRE ATT&CK techniques.
+
+Examples:
+
+| Threat               | MITRE Technique |
+| -------------------- | --------------- |
+| Brute Force          | T1110.001       |
+| Password Spray       | T1110.003       |
+| Credential Stuffing  | T1110.004       |
+| Privilege Escalation | T1078           |
+| Persistence          | T1053           |
+| Defense Evasion      | T1070           |
+
+---
 
 ### Alert Management
-Blueprint: `app/blueprints/alerts.py`
-- `/alerts/` — alert list view
-- `/alerts/<id>` — alert detail
-- `/alerts/<id>/status` — update alert status
-- `/alerts/<id>/false-positive` — mark false positive
-- `/alerts/api/summary` — alert summary JSON
+
+Features:
+
+- Alert Dashboard
+- Severity Classification
+- Alert Investigation
+- Alert Status Tracking
+- Alert Filtering
+- MITRE Mapping Visibility
+
+Severity Levels:
+
+- Low
+- Medium
+- High
+- Critical
+
+---
 
 ### Incident Management
-Blueprint: `app/blueprints/incidents.py`
-- `/incidents/` — incident list
-- `/incidents/create` — create new incident manually
-- `/incidents/<id>` — view incident detail
-- `/incidents/<id>/update` — update status/severity/notes
-- `/incidents/<id>/comment` — add investigation comment
-- `/incidents/api/list` — incident list JSON
 
-### Reporting
-Blueprint: `app/blueprints/reports.py`
-- `/reports/` — saved reports list
-- `/reports/generate` — create PDF or CSV report
-- `/reports/download/<id>` — download generated report
-- `/reports/delete/<id>` — delete saved report
-- report generation uses:
-  - PDF: `app/reports/report_generator.py`
-  - CSV: `app/reports/report_generator.py`
-- reports are stored in `reports_output/`
+Features:
+
+- Incident Creation
+- Incident Tracking
+- Incident Status Management
+- Investigation Workflow
+- Related Alert Correlation
+- Incident Documentation
+
+---
 
 ### Threat Intelligence
-Blueprint: `app/blueprints/intelligence.py`
-- `/intelligence/` — threat intel history view
-- `/intelligence/lookup` — lookup IP/domain/hash
-- `/intelligence/api/check/<indicator>` — indicator API lookup
-- stores results in `ThreatIntelligence` table
 
-### Forensics
-Blueprint: `app/blueprints/forensics.py`
-- `/forensics/` — forensic artifact index
-- `/forensics/artifact/add` — add a new artifact/hashes
-- `/forensics/hash-check` — compute MD5/SHA1/SHA256 for a value
+Integrated with VirusTotal.
 
-## Parsing and Detection
+Supports:
 
-### Parsers
-Parser registry: `app/parsers/__init__.py`
-- detects log type and dispatches to parsers
-- supports parser classes:
-  - `LinuxParser`
-  - `ApacheParser`
-  - `NginxParser`
-  - `WindowsEventParser`
-  - `SysmonParser`
-  - `FirewallParser`
+- IP Reputation Lookup
+- Domain Reputation Lookup
+- URL Reputation Lookup
+- File Hash Reputation Lookup
 
-Common log features:
-- timestamp extraction
-- source IP extraction
-- username, hostname, event ID, severity
-- severity mapping and threat flagging
+Threat intelligence information includes:
 
-### Threat Detection
-- `app/detectors/threat_detector.py` performs rule-based detection:
-  - per-event detections for Windows and Linux
-  - brute force and password spray detection
-  - reconnaissance and web attack detection
-  - privilege escalation, persistence, lateral movement, defense evasion
-  - builds alert records with MITRE ATT&CK mappings
+- Reputation Score
+- Malicious Detection Count
+- Threat Tags
+- Indicator Classification
 
-### Correlation
-- `app/detectors/correlation_engine.py` groups alerts into incident-worthy attack chains.
-- matches sequences like reconnaissance → web attack, log clearing → persistence, etc.
+---
 
-### Behavior Analytics
-- `app/utils/behavior_analytics.py` detects user anomalies:
-  - off-hours logins
-  - multiple source IPs / impossible travel
-  - excessive authentication failures
+### Digital Forensics
 
-## Configuration and Environment
+Basic forensic capabilities:
 
-### Required directories
-- `uploads/` — log files saved after upload
-- `reports_output/` — generated report files
-- `instance/` — SQLite database and runtime files
-- `logs/` — optional application logs
+- MD5 Hash Generation
+- SHA1 Hash Generation
+- SHA256 Hash Generation
+- Artifact Tracking
+- Evidence Documentation
 
-### Environment variables
-The app uses `python-dotenv` if a `.env` file exists.
-Common variables:
-- `SECRET_KEY`
-- `DATABASE_URL` (defaults to SQLite in `instance/soc_platform.db`)
-- `MAX_CONTENT_LENGTH`
-- `ALLOWED_EXTENSIONS`
-- `VIRUSTOTAL_API_KEY`, `ABUSEIPDB_API_KEY`, `OTX_API_KEY`
-- `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USE_TLS`, `MAIL_USERNAME`, `MAIL_PASSWORD`
-- `ALERT_RECIPIENTS`
-- `SESSION_COOKIE_SECURE`, `WTF_CSRF_ENABLED`
-- `MONITOR_INTERVAL`, `AUTO_REFRESH_INTERVAL`
+---
 
-### Default database users
-When the app first starts, it creates two seeded accounts if absent:
-- `admin` / `Admin@SOC2024!`
-- `analyst` / `Analyst@SOC2024!`
+### Security Reporting
 
-## Running the Project
+Generate:
 
-### Windows native
-1. Open PowerShell in `c:\SOC_Platform`
-2. Create and activate a virtual environment:
-   ```powershell
-   py -m venv venv
-   .\venv\Scripts\Activate.ps1
-   ```
-3. Install dependencies:
-   ```powershell
-   py -m pip install --upgrade pip
-   py -m pip install -r requirements.txt
-   ```
-4. Create directories if needed:
-   ```powershell
-   mkdir uploads reports_output instance logs
-   ```
-5. Run the app:
-   ```powershell
-   py run.py
-   ```
-6. Open the app in your browser:
-   `http://localhost:5000`
+- PDF Security Reports
+- CSV Security Reports
 
-### Using bundled batch scripts
-- `install.bat` installs required Python dependencies
-- `start.bat` launches the app in development mode
+Reports include:
 
-### Docker
-1. Build and run with Docker Compose:
-   ```powershell
-   docker compose up --build
-   ```
-2. The service is exposed on `http://localhost:5000`
-3. Log and report directories are mounted from the host.
+- Executive Summary
+- Threat Statistics
+- Severity Distribution
+- Top Threat Categories
+- MITRE ATT&CK Mappings
+- Incident Summary
 
-### Notes for production
-- `FLASK_ENV=production` is used in Docker.
-- Use a production-ready database instead of SQLite by setting `DATABASE_URL`.
-- Provide a strong `SECRET_KEY` and secure mail/API credentials.
-- Mount persistent volumes for `uploads`, `reports_output`, and `instance`.
+---
 
-## Testing and Sample Data
-- `tests/` contains sample Windows and Sysmon log exports for functional validation.
-- Use the sample files to exercise log upload and detection flows.
+## Technology Stack
 
-## Application Workflows
+### Backend
 
-### Log ingestion workflow
-1. User uploads a log file via `/logs/upload`
-2. The app saves the file into `uploads/`
-3. The parser registry auto-detects the log type and parses each line
-4. Parsed entries are stored in `LogEntry`
-5. `ThreatDetector` evaluates logs and creates `Alert` records
-6. `CorrelationEngine` can group related alerts into incidents
+- Python
+- Flask
+- SQLAlchemy
+- SQLite
 
-### Alert and incident workflow
-- Analysts view alerts on `/alerts/`
-- Alerts can be filtered by severity, threat type, and status
-- Analysts create incidents from alerts or manually via `/incidents/create`
-- Incident details, timeline, and related alerts are tracked
-- Comments are captured for investigation notes
+### Frontend
 
-### Reporting workflow
-- Reports are generated on `/reports/generate`
-- Active reports include only data from uploads still present in the database
-- PDF reports are styled with ReportLab and include executive summaries
-- CSV reports export alert details
+- HTML
+- CSS
+- Bootstrap
+- JavaScript
+- Chart.js
 
-## Additional Notes
-- The application uses Flask-Login for user sessions and route protection.
-- If you use external AI or threat intelligence APIs, configure the appropriate keys in environment variables or `.env`.
-- The app is intentionally modular to allow adding new parser types, detectors, and blueprint features.
+### Security
 
-## Useful Commands
-- Install requirements: `py -m pip install -r requirements.txt`
-- Run app: `py run.py`
-- Start Docker: `docker compose up --build`
-- Run migration script: `py migrate_db.py`
+- MITRE ATT&CK Framework
+- VirusTotal API
+- Rule-Based Detection Engine
 
-## Contact
-For support or customization, inspect the relevant blueprint under `app/blueprints/`, parser under `app/parsers/`, and detection logic under `app/detectors/`.
+### Reporting
+
+- ReportLab
+- CSV Export
+
+---
+
+## Project Architecture
+
+```text
+                ┌────────────────────┐
+                │  Security Logs     │
+                └─────────┬──────────┘
+                          │
+                          ▼
+                ┌────────────────────┐
+                │   Log Parsers      │
+                └─────────┬──────────┘
+                          │
+                          ▼
+                ┌────────────────────┐
+                │ Detection Engine   │
+                └─────────┬──────────┘
+                          │
+                          ▼
+                ┌────────────────────┐
+                │      Alerts        │
+                └─────────┬──────────┘
+                          │
+                          ▼
+                ┌────────────────────┐
+                │     Incidents      │
+                └─────────┬──────────┘
+                          │
+                          ▼
+                ┌────────────────────┐
+                │ Threat Intelligence│
+                └─────────┬──────────┘
+                          │
+                          ▼
+                ┌────────────────────┐
+                │      Reports       │
+                └────────────────────┘
+```
+
+---
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/ajai-cybersecurity/soc-threat-detection-platform.git
+cd soc-threat-detection-platform
+```
+
+### Create Virtual Environment
+
+```bash
+py -m venv venv
+```
+
+Activate:
+
+```bash
+venv\Scripts\activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Configure Environment
+
+Create `.env`
+
+```env
+SECRET_KEY=your_secret_key
+
+DATABASE_URL=sqlite:///soc_platform.db
+
+VIRUSTOTAL_API_KEY=your_virustotal_api_key
+```
+
+### Run Application
+
+```bash
+py run.py
+```
+
+Open:
+
+```text
+http://localhost:5000
+```
+
+---
+
+## Screenshots
+
+### Dashboard
+
+- Security Overview
+- Threat Metrics
+- Alert Statistics
+
+### Alert Management
+
+- Threat Detection Results
+- MITRE Mapping
+
+### Incident Management
+
+- Investigation Tracking
+
+### Threat Intelligence
+
+- VirusTotal Reputation Lookup
+
+### Reporting
+
+- PDF and CSV Export
+
+---
+
+## Future Enhancements
+
+Planned upgrades:
+
+- Sigma Rule Support
+- YARA Integration
+- IOC Hunting Module
+- Real-Time Log Monitoring
+- SOAR Automation
+- Advanced Correlation Engine
+- Threat Hunting Dashboard
+- PostgreSQL Support
+- Multi-Tenant Architecture
+- Wazuh Integration
+- SIEM Integration
+
+---
+
+## Learning Objectives
+
+This project demonstrates:
+
+- Security Monitoring
+- Threat Detection
+- Incident Response
+- Log Analysis
+- Threat Intelligence
+- Digital Forensics
+- MITRE ATT&CK Mapping
+- Security Reporting
+- Flask Application Development
+
+---
+
+## Author
+
+**Ajai M**
+
+Cyber Security Engineer | SOC Analyst | DFIR Enthusiast
+
+Areas of Interest:
+
+- Security Operations Center (SOC)
+- Digital Forensics
+- Incident Response
+- Threat Hunting
+- Threat Intelligence
+- Detection Engineering
+
+GitHub:
+https://github.com/ajai-cybersecurity
+
+LinkedIn:
+https://www.linkedin.com/in/ajai-m-189a39351/
+
+---
+
+## License
+
+This project is intended for educational, research, and portfolio purposes.
